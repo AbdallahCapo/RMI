@@ -16,7 +16,7 @@ public class TaskManagerClient {
 
             Scanner scanner = new Scanner(System.in);
             while (true) {
-                System.out.println("\n1. Add Task\n2. View Tasks\n3. Exit");
+                System.out.println("\n1. Add Task\n2. View Tasks\n3. Delete Task\n4. Exit");
                 System.out.print("Choice: ");
                 int choice = scanner.nextInt();
                 scanner.nextLine();  // Consume newline
@@ -30,11 +30,23 @@ public class TaskManagerClient {
                     case 2 -> {
                         List<String> tasks = manager.getAllTasks();
                         System.out.println("Tasks:");
+                        if (tasks.isEmpty()) {
+                            System.out.println("No tasks available.");
+                        }
                         for (String t : tasks) {
                             System.out.println("- " + t);
                         }
                     }
-                    case 3 -> System.exit(0);
+                    case 3 -> {
+                        System.out.print("Enter task to delete: ");
+                        String task = scanner.nextLine();
+                        if (manager.deleteTask(task)) {
+                            System.out.println("Task deleted successfully.");
+                        } else {
+                            System.out.println("Task not found.");
+                        }
+                    }
+                    case 4 -> System.exit(0);
                 }
             }
         } catch (MalformedURLException | NotBoundException | RemoteException e) {

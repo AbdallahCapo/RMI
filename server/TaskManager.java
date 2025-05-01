@@ -38,5 +38,24 @@ public class TaskManager extends UnicastRemoteObject implements TaskManagerInter
             throw new RemoteException("Error reading file", e);
         }
         return tasks;
- }
+    }
+
+    @Override
+    public synchronized boolean deleteTask(String task) throws RemoteException {
+        List<String> tasks = getAllTasks();
+        if (tasks.remove(task)) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                for (String t : tasks) {
+                    writer.write(t);
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                throw new RemoteException("Error writing to file", e);
+            }
+            System.out.println("Task deleted: " + task);
+            return true;
+        }
+        return false;
+    }
+
 }
